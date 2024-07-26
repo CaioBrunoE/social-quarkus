@@ -4,6 +4,7 @@ import io.github.caiobrunoE.quarkussocial.rest.Entity.Post;
 import io.github.caiobrunoE.quarkussocial.rest.Entity.User;
 import io.github.caiobrunoE.quarkussocial.rest.dto.PostDto;
 import io.github.caiobrunoE.quarkussocial.rest.dto.PostResponseDto;
+import io.github.caiobrunoE.quarkussocial.rest.repository.FollowerRepository;
 import io.github.caiobrunoE.quarkussocial.rest.repository.PostRepository;
 import io.github.caiobrunoE.quarkussocial.rest.repository.UserRepository;
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
@@ -26,6 +27,9 @@ public class PostService {
     UserRepository userRepository;
 
     @Inject
+    FollowerRepository followerRepository;
+
+    @Inject
     PostRepository postRepository;
 
     public Response createPost(Long userId, PostDto dto) {
@@ -43,10 +47,25 @@ public class PostService {
         return Response.status(Response.Status.CREATED).build();
     }
 
-    public Response getAllPosts(Long userId) {
+    public Response getAllPosts(Long userId, Long followerId) {
         User user = userRepository.findById(userId);
         if (user ==null){
             return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        if (followerId ==null){
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        }
+
+       User follower = userRepository.findById(followerId);
+
+        if (follower ==null){
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        }
+
+        boolean follows = followerRepository.follows(follower, user);
+
+        if (!follows){
+            return Response.status(Response.Status.FORBIDDEN).build();
         }
 
         PanacheQuery<Post> query = postRepository.find("user", Sort.by("dateTime", Sort.Direction.Descending), user);

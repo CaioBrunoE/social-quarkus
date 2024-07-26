@@ -1,10 +1,7 @@
 package io.github.caiobrunoE.quarkussocial.rest.resource;
 
-import io.github.caiobrunoE.quarkussocial.rest.Entity.User;
 import io.github.caiobrunoE.quarkussocial.rest.dto.PostDto;
-import io.github.caiobrunoE.quarkussocial.rest.repository.UserRepository;
 import io.github.caiobrunoE.quarkussocial.rest.service.PostService;
-import io.github.caiobrunoE.quarkussocial.rest.service.UserService;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
@@ -26,7 +23,7 @@ public class PostResource {
     }
 
     @GET
-    public Response listPost(@PathParam("userId") Long userId ){
-     return service.getAllPosts(userId);
+    public Response listPost(@PathParam("userId") Long userId, @HeaderParam("followerId") Long followerId ){
+     return service.getAllPosts(userId, followerId);
     }
 }
