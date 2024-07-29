@@ -1,6 +1,5 @@
 package io.github.caiobrunoE.quarkussocial.rest.dto;
 
-import io.github.caiobrunoE.quarkussocial.rest.Entity.Follower;
 import lombok.Data;
 
 import java.util.List;
